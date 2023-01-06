@@ -1,0 +1,10 @@
+# Archivos
+./README.md
+./yarn.lock
+
+# Directorios
+./git
+./test
+./dist
+./node_modules
+./prisma/migrations
