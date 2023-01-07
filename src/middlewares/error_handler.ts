@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import app from "../app";
 import { ApiError } from "../utils/errors/api_error";
-
+/**
+ * ErrorHandle class to apply at middleware
+ */
 export default class ErrorHandler {
   static handle = () => {
     return async (

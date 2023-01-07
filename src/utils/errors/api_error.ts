@@ -1,3 +1,6 @@
+/**
+ * Modified Error class to standarizing the error handler
+ */
 export class ApiError extends Error {
   statusCode: number;
   rawErrors: [] | undefined;
