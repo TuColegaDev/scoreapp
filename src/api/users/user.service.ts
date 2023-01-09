@@ -1,4 +1,6 @@
 import { PrismaClient, User, Prisma } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
+import { ApiError } from "../../utils/errors/api_error";
 
 export default class UserService {
   prisma: PrismaClient;
@@ -12,9 +14,8 @@ export default class UserService {
       const users: User[] = await this.prisma.user.findMany();
 
       return users;
-    } catch (error) {
-      await this.prisma.$disconnect();
-      throw error;
+    } catch (error: any) {
+      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
     }
   }
 
@@ -25,9 +26,8 @@ export default class UserService {
       });
       if (!user) throw new Error("User not found");
       return await this.prisma.user.update({ where: { id: Number(id) }, data });
-    } catch (error) {
-      await this.prisma.$disconnect();
-      throw error;
+    } catch (error: any) {
+      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
     }
   }
 
@@ -39,9 +39,8 @@ export default class UserService {
       if (!user) throw new Error("User not found");
 
       return await this.prisma.user.delete({ where: { id: Number(id) } });
-    } catch (error) {
-      await this.prisma.$disconnect();
-      throw error;
+    } catch (error: any) {
+      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
     }
   }
 }
