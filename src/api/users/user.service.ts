@@ -8,14 +8,13 @@ export default class UserService {
   constructor() {
     this.prisma = new PrismaClient();
   }
-
   async getAll() {
     try {
       const users: User[] = await this.prisma.user.findMany();
-
-      return users;
+      users.forEach((user: Prisma.UserCreateInput) => delete user.password)
+      return users
     } catch (error: any) {
-      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
+      throw new ApiError(StatusCodes.NOT_FOUND, error.message);
     }
   }
 
@@ -24,10 +23,12 @@ export default class UserService {
       const user: User | null = await this.prisma.user.findFirst({
         where: { id: Number(id) },
       });
-      if (!user) throw new Error("User not found");
-      return await this.prisma.user.update({ where: { id: Number(id) }, data });
+      if (!user) throw new ApiError( StatusCodes.NOT_FOUND, 'Not found User')
+      const updatedUser: Prisma.UserCreateInput = await this.prisma.user.update({ where: { id: Number(id) }, data });
+      delete updatedUser.password
+      return updatedUser
     } catch (error: any) {
-      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
+      throw new ApiError(StatusCodes.NOT_FOUND, error.message);
     }
   }
 
@@ -36,11 +37,10 @@ export default class UserService {
       const user: User | null = await this.prisma.user.findFirst({
         where: { id: Number(id) },
       });
-      if (!user) throw new Error("User not found");
-
+      if (!user) throw new ApiError( StatusCodes.NOT_FOUND, 'Not found User')
       return await this.prisma.user.delete({ where: { id: Number(id) } });
     } catch (error: any) {
-      throw new ApiError( StatusCodes.NOT_FOUND, error.message );
+      throw new ApiError(StatusCodes.NOT_FOUND, error.message);
     }
   }
 }
